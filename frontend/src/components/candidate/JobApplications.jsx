@@ -48,6 +48,7 @@ export default function JobApplications() {
     }
 
     try {
+      console.log('📝 Submitting application for job:', jobId);
       const formData = new FormData();
       formData.append('resume', resumeFile);
       formData.append('coverLetter', coverLetter);
@@ -58,18 +59,22 @@ export default function JobApplications() {
         body: formData
       });
 
+      const responseData = await res.json();
+      console.log('📥 Application response:', responseData);
+
       if (res.ok) {
+        console.log('✅ Application submitted successfully');
         alert('Application submitted successfully');
         setSelectedJob(null);
         setCoverLetter('');
         setResumeFile(null);
         fetchMyApplications();
       } else {
-        const errorData = await res.json();
-        alert(errorData.error || 'Failed to apply');
+        console.error('❌ Application failed:', responseData);
+        alert(responseData.msg || responseData.error || 'Failed to apply');
       }
     } catch (err) {
-      console.error(err);
+      console.error('❌ Application error:', err);
       alert('An error occurred while submitting your application');
     }
   };
